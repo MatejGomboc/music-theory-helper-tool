@@ -101,15 +101,3 @@
 .note-label sub {
   font-size: 9px;
 }
-
-/* Adjust positioning for black keys */
-.piano-key[data-note*="C#"],
-.piano-key[data-note*="F#"] {
-  margin-left: -14px;
-}
-
-.piano-key[data-note*="D#"],
-.piano-key[data-note*="G#"],
-.piano-key[data-note*="A#"] {
-  margin-left: -14px;
-}
