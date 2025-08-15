@@ -5,30 +5,50 @@ import * as Tone from 'tone';
 const Piano = ({ selectedNotes, allowedNotes, onKeyClick }) => {
   const synthRef = useRef(null);
   const octaves = [3, 4, 5, 6];
+  const initErrorRef = useRef(false);
   
-  // Initialize Tone.js synth
+  // Initialize Tone.js synth with error handling
   useEffect(() => {
-    synthRef.current = new Tone.PolySynth(Tone.Synth, {
-      oscillator: {
-        type: 'triangle'
-      },
-      envelope: {
-        attack: 0.005,
-        decay: 0.1,
-        sustain: 0.3,
-        release: 1
-      }
-    }).toDestination();
+    try {
+      synthRef.current = new Tone.PolySynth(Tone.Synth, {
+        oscillator: {
+          type: 'triangle'
+        },
+        envelope: {
+          attack: 0.005,
+          decay: 0.1,
+          sustain: 0.3,
+          release: 1
+        }
+      }).toDestination();
+      
+      initErrorRef.current = false;
+    } catch (error) {
+      console.error('Failed to initialize audio:', error);
+      initErrorRef.current = true;
+    }
     
     return () => {
-      synthRef.current?.dispose();
+      // Safely dispose of the synth
+      if (synthRef.current) {
+        try {
+          synthRef.current.dispose();
+        } catch (error) {
+          console.error('Error disposing synth:', error);
+        }
+      }
     };
   }, []);
 
   const playNote = async (note) => {
-    if (synthRef.current) {
-      await Tone.start();
-      synthRef.current.triggerAttackRelease(note, '8n');
+    if (synthRef.current && !initErrorRef.current) {
+      try {
+        await Tone.start();
+        synthRef.current.triggerAttackRelease(note, '8n');
+      } catch (error) {
+        console.error('Failed to play note:', error);
+        // Don't block the UI if audio fails
+      }
     }
   };
 
@@ -90,6 +110,11 @@ const Piano = ({ selectedNotes, allowedNotes, onKeyClick }) => {
           </div>
         ))}
       </div>
+      {initErrorRef.current && (
+        <div className="audio-warning">
+          Audio playback unavailable (visual mode only)
+        </div>
+      )}
     </div>
   );
 };

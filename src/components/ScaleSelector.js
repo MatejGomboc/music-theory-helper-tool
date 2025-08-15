@@ -13,7 +13,7 @@ const ScaleSelector = ({
   setIsCustomScale
 }) => {
   const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-  const intervals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const intervals = [1, 2, 3, 4, 5, 6];
 
   const handleScaleChange = (e) => {
     const value = e.target.value;
@@ -27,13 +27,35 @@ const ScaleSelector = ({
   };
 
   const handleIntervalToggle = (index, value) => {
+    const parsedValue = parseInt(value);
+    
+    // Validate interval value
+    if (parsedValue < 1 || parsedValue > 6) {
+      alert('Interval must be between 1 and 6 semitones');
+      return;
+    }
+    
     const newCustomScale = [...customScale];
-    newCustomScale[index] = parseInt(value);
+    newCustomScale[index] = parsedValue;
+    
+    // Check if total exceeds reasonable limit
+    const total = newCustomScale.reduce((a, b) => a + b, 0);
+    if (total > 24) {
+      alert('Total intervals cannot exceed 24 semitones (2 octaves)');
+      return;
+    }
+    
     setCustomScale(newCustomScale);
   };
 
   const addInterval = () => {
     if (customScale.length < 12) {
+      // Check if adding would exceed limit
+      const currentTotal = customScale.reduce((a, b) => a + b, 0);
+      if (currentTotal >= 24) {
+        alert('Cannot add more intervals - already at 2 octave limit');
+        return;
+      }
       setCustomScale([...customScale, 1]);
     }
   };
@@ -43,6 +65,10 @@ const ScaleSelector = ({
       const newCustomScale = customScale.filter((_, i) => i !== index);
       setCustomScale(newCustomScale);
     }
+  };
+
+  const getTotalSemitones = () => {
+    return customScale.reduce((a, b) => a + b, 0);
   };
 
   return (
@@ -99,16 +125,19 @@ const ScaleSelector = ({
                 </button>
               </div>
             ))}
-            {customScale.length < 12 && (
+            {customScale.length < 12 && getTotalSemitones() < 24 && (
               <button className="add-interval-btn" onClick={addInterval}>
                 + Add Interval
               </button>
             )}
           </div>
           <div className="interval-sum">
-            Total semitones: {customScale.reduce((a, b) => a + b, 0)}
-            {customScale.reduce((a, b) => a + b, 0) !== 12 && 
+            Total semitones: {getTotalSemitones()}
+            {getTotalSemitones() !== 12 && 
               <span className="warning"> (Note: octave is 12 semitones)</span>
+            }
+            {getTotalSemitones() > 12 && getTotalSemitones() <= 24 &&
+              <span className="info"> (Spanning multiple octaves)</span>
             }
           </div>
         </div>

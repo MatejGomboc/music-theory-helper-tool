@@ -21,7 +21,9 @@ export const getScaleNotes = (rootNote, intervals) => {
   }
   
   // Remove the last note if it's the same as the root (octave)
-  if (notes[notes.length - 1] === rootNote) {
+  // Fixed: Compare only note names without octave numbers
+  if (notes[notes.length - 1] === rootNote || 
+      notes[notes.length - 1] === rootNote.replace(/[0-9]/g, '')) {
     notes.pop();
   }
   
@@ -65,13 +67,22 @@ export const getChordNotes = (rootNote, chordType, inversion, allowedNotes) => {
     }
   }
   
-  // Apply inversion
+  // Apply inversion with better octave handling
   if (inversion > 0 && chordNotes.length > inversion) {
     for (let i = 0; i < inversion; i++) {
       const note = chordNotes.shift();
       const noteName = note.slice(0, -1);
       const noteOctave = parseInt(note.slice(-1));
+      
+      // Calculate the new octave for the inverted note
       let newOctave = noteOctave + 1;
+      
+      // If the highest note in the chord is already in a high octave,
+      // don't go beyond octave 7 to keep it playable
+      const highestOctave = Math.max(...chordNotes.map(n => parseInt(n.slice(-1))));
+      if (highestOctave >= 6) {
+        newOctave = Math.min(newOctave, 7);
+      }
       
       // Ensure we don't exceed the maximum octave
       if (newOctave > 8) {
