@@ -1,0 +1,136 @@
+.chord-panel {
+  background: white;
+  border-radius: 6px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.panel-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.clear-btn {
+  padding: 6px 12px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.clear-btn:hover {
+  background: #c0392b;
+}
+
+.chord-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.chord-category h4 {
+  font-size: 13px;
+  font-weight: 500;
+  color: #7f8c8d;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.chord-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chord-btn {
+  padding: 8px 14px;
+  background: #ecf0f1;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.chord-btn:hover {
+  background: #d5dbdd;
+  border-color: #95a5a6;
+}
+
+.chord-btn.active {
+  background: #3498db;
+  color: white;
+  border-color: #2980b9;
+}
+
+.inversions {
+  padding-top: 15px;
+  border-top: 1px solid #ecf0f1;
+  margin-bottom: 20px;
+}
+
+.inversions h4 {
+  font-size: 13px;
+  font-weight: 500;
+  color: #7f8c8d;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.inversion-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.inversion-btn {
+  padding: 8px 14px;
+  background: #ecf0f1;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.inversion-btn:hover {
+  background: #d5dbdd;
+  border-color: #95a5a6;
+}
+
+.inversion-btn.active {
+  background: #e67e22;
+  color: white;
+  border-color: #d35400;
+}
+
+.chord-info {
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #e9ecef;
+}
+
+.chord-info p {
+  font-size: 13px;
+  color: #666;
+  margin: 4px 0;
+}
+
+.chord-info strong {
+  color: #2c3e50;
+}

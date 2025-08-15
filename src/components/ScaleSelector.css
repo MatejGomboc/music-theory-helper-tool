@@ -1,0 +1,138 @@
+.scale-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.selector-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.selector-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.selector-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+.selector-group select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+}
+
+.selector-group select:hover {
+  border-color: #3498db;
+}
+
+.selector-group select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.custom-scale-builder {
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+}
+
+.custom-scale-builder > label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.interval-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.interval-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.interval-item span {
+  font-size: 13px;
+  color: #666;
+}
+
+.interval-item select {
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 13px;
+}
+
+.remove-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: #e74c3c;
+  color: white;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-btn:hover {
+  background: #c0392b;
+}
+
+.remove-btn:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.add-interval-btn {
+  padding: 6px 12px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.add-interval-btn:hover {
+  background: #229954;
+}
+
+.interval-sum {
+  font-size: 13px;
+  color: #666;
+  padding-top: 10px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.interval-sum .warning {
+  color: #e67e22;
+  font-weight: 500;
+}
