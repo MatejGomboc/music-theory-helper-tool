@@ -37,6 +37,7 @@ export const getChordNotes = (rootNote, chordType, inversion, allowedNotes) => {
   const rootIndex = getNoteIndex(rootNoteName);
   
   let chordNotes = [];
+  let notePositions = []; // Track original positions for proper inversions
   
   // Build the chord notes
   for (let i = 0; i < intervals.length; i++) {
@@ -52,9 +53,15 @@ export const getChordNotes = (rootNote, chordType, inversion, allowedNotes) => {
       noteOctave = octave + 2;
     }
     
+    // Validate octave range (piano typically goes from C0 to C8)
+    if (noteOctave < 0) noteOctave = 0;
+    if (noteOctave > 8) noteOctave = 8;
+    
     // Only add note if it's in the allowed scale
     if (allowedNotes.includes(noteName)) {
-      chordNotes.push(`${noteName}${noteOctave}`);
+      const fullNote = `${noteName}${noteOctave}`;
+      chordNotes.push(fullNote);
+      notePositions.push(i); // Track which interval this note represents
     }
   }
   
@@ -64,7 +71,16 @@ export const getChordNotes = (rootNote, chordType, inversion, allowedNotes) => {
       const note = chordNotes.shift();
       const noteName = note.slice(0, -1);
       const noteOctave = parseInt(note.slice(-1));
-      chordNotes.push(`${noteName}${noteOctave + 1}`);
+      let newOctave = noteOctave + 1;
+      
+      // Ensure we don't exceed the maximum octave
+      if (newOctave > 8) {
+        newOctave = 8;
+      }
+      
+      // Check if the inverted note would still be valid
+      const invertedNote = `${noteName}${newOctave}`;
+      chordNotes.push(invertedNote);
     }
   }
   

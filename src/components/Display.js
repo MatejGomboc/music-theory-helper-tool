@@ -1,7 +1,7 @@
 import React from 'react';
 import './Display.css';
 
-const Display = ({ selectedNotes, selectedChord, chordInversion, scale, rootNote }) => {
+const Display = ({ selectedNotes, selectedChord, chordInversion, scale, rootNote, chordRootNote }) => {
   const noteColors = {
     'C': '#ff6b6b',
     'C#': '#cc5252',
@@ -18,9 +18,9 @@ const Display = ({ selectedNotes, selectedChord, chordInversion, scale, rootNote
   };
 
   const getChordName = () => {
-    if (!selectedChord || selectedNotes.length === 0) return null;
+    if (!selectedChord || !chordRootNote) return null;
     
-    const rootNote = selectedNotes[0].slice(0, -1);
+    const rootNoteName = chordRootNote.slice(0, -1);
     const chordTypes = {
       'major': '',
       'minor': 'm',
@@ -39,9 +39,8 @@ const Display = ({ selectedNotes, selectedChord, chordInversion, scale, rootNote
       'dom13': '13'
     };
     
-    let chordName = rootNote + chordTypes[selectedChord];
+    let chordName = rootNoteName + chordTypes[selectedChord];
     if (chordInversion > 0) {
-      const inversionNotations = ['', '⁶', '⁶₄', '⁴₂', '⁶₅', '⁴₃', '²'];
       chordName += ` (${chordInversion}${chordInversion === 1 ? 'st' : chordInversion === 2 ? 'nd' : chordInversion === 3 ? 'rd' : 'th'} inv.)`;
     }
     

@@ -16,6 +16,7 @@ function App() {
   const [selectedChord, setSelectedChord] = useState(null);
   const [chordInversion, setChordInversion] = useState(0);
   const [allowedNotes, setAllowedNotes] = useState([]);
+  const [chordRootNote, setChordRootNote] = useState(null); // Track the original root note for chords
 
   // Calculate allowed notes based on selected scale
   useEffect(() => {
@@ -37,6 +38,7 @@ function App() {
       // If a chord is selected, replace all notes with the chord
       const chordNotes = getChordNotes(note, selectedChord, chordInversion, allowedNotes);
       setSelectedNotes(chordNotes);
+      setChordRootNote(note); // Store the original root note
     } else {
       // Toggle individual note
       setSelectedNotes(prev => {
@@ -47,6 +49,7 @@ function App() {
           return [...prev, note];
         }
       });
+      setChordRootNote(null); // Clear chord root when in free play mode
     }
   };
 
@@ -55,14 +58,14 @@ function App() {
     setChordInversion(0);
     // Clear selected notes when chord mode is activated
     setSelectedNotes([]);
+    setChordRootNote(null);
   };
 
   const handleInversionChange = (inversion) => {
     setChordInversion(inversion);
-    if (selectedChord && selectedNotes.length > 0) {
-      // Recalculate chord with new inversion
-      const rootNote = selectedNotes[0];
-      const chordNotes = getChordNotes(rootNote, selectedChord, inversion, allowedNotes);
+    if (selectedChord && chordRootNote) {
+      // Recalculate chord with new inversion using the original root note
+      const chordNotes = getChordNotes(chordRootNote, selectedChord, inversion, allowedNotes);
       setSelectedNotes(chordNotes);
     }
   };
@@ -71,6 +74,7 @@ function App() {
     setSelectedNotes([]);
     setSelectedChord(null);
     setChordInversion(0);
+    setChordRootNote(null);
   };
 
   return (
@@ -115,6 +119,7 @@ function App() {
             chordInversion={chordInversion}
             scale={isCustomScale ? 'Custom' : selectedScale}
             rootNote={rootNote}
+            chordRootNote={chordRootNote}
           />
         </div>
       </div>
