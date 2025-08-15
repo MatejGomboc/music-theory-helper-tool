@@ -59,6 +59,11 @@ function App() {
         if (noteIndex > -1) {
           return prev.filter(n => n !== note);
         } else {
+          // Limit the number of selected notes to prevent performance issues
+          if (prev.length >= 10) {
+            alert('Maximum 10 notes can be selected at once');
+            return prev;
+          }
           return [...prev, note];
         }
       });

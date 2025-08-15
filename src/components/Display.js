@@ -47,8 +47,8 @@ const Display = ({ selectedNotes, selectedChord, chordInversion, scale, rootNote
     let chordName = rootNoteName + chordSuffix;
     if (chordInversion > 0) {
       const inversionSuffix = chordInversion === 1 ? 'st' : 
-                             chordInversion === 2 ? 'nd' : 
-                             chordInversion === 3 ? 'rd' : 'th';
+                              chordInversion === 2 ? 'nd' : 
+                              chordInversion === 3 ? 'rd' : 'th';
       chordName += ` (${chordInversion}${inversionSuffix} inv.)`;
     }
     
@@ -56,11 +56,11 @@ const Display = ({ selectedNotes, selectedChord, chordInversion, scale, rootNote
   };
 
   const isMinorChord = () => {
-    return selectedChord && (
-      selectedChord.includes('min') || 
-      selectedChord.includes('dim') ||
-      selectedChord === 'minor' // Handle the base minor chord
-    );
+    if (!selectedChord) return false;
+    
+    // Check for any chord type that contains minor qualities
+    const minorChordTypes = ['minor', 'min7', 'min9', 'min11', 'min7b5', 'diminished', 'dim7'];
+    return minorChordTypes.includes(selectedChord) || selectedChord.includes('min') || selectedChord.includes('dim');
   };
 
   const formatScaleName = (scaleName) => {

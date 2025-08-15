@@ -4,14 +4,25 @@ const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', '
 
 export const getNoteIndex = (note) => {
   const noteName = note.replace(/[0-9]/g, '');
-  return noteNames.indexOf(noteName);
+  const index = noteNames.indexOf(noteName);
+  if (index === -1) {
+    console.error(`Invalid note name: ${noteName}`);
+    return 0; // Return default instead of crashing
+  }
+  return index;
 };
 
 export const getNoteName = (index) => {
-  return noteNames[index % 12];
+  // Ensure we always get a valid note
+  const normalizedIndex = ((index % 12) + 12) % 12;
+  return noteNames[normalizedIndex];
 };
 
 export const getScaleNotes = (rootNote, intervals) => {
+  if (!intervals || intervals.length === 0) {
+    return [rootNote];
+  }
+  
   const notes = [rootNote];
   let currentIndex = getNoteIndex(rootNote);
   
@@ -22,8 +33,9 @@ export const getScaleNotes = (rootNote, intervals) => {
   
   // Remove the last note if it's the same as the root (octave)
   // Fixed: Compare only note names without octave numbers
-  if (notes[notes.length - 1] === rootNote || 
-      notes[notes.length - 1] === rootNote.replace(/[0-9]/g, '')) {
+  const lastNote = notes[notes.length - 1];
+  const rootNoteName = rootNote.replace(/[0-9]/g, '');
+  if (lastNote === rootNoteName) {
     notes.pop();
   }
   
@@ -32,10 +44,17 @@ export const getScaleNotes = (rootNote, intervals) => {
 
 export const getChordNotes = (rootNote, chordType, inversion, allowedNotes) => {
   const intervals = CHORDS[chordType];
-  if (!intervals) return [];
+  if (!intervals || intervals.length === 0) return [];
   
   const rootNoteName = rootNote.slice(0, -1);
   const octave = parseInt(rootNote.slice(-1));
+  
+  // Validate octave
+  if (isNaN(octave) || octave < 0 || octave > 8) {
+    console.error(`Invalid octave: ${octave}`);
+    return [];
+  }
+  
   const rootIndex = getNoteIndex(rootNoteName);
   
   let chordNotes = [];
@@ -48,16 +67,13 @@ export const getChordNotes = (rootNote, chordType, inversion, allowedNotes) => {
     
     // Calculate which octave this note should be in
     let noteOctave = octave;
-    if (rootIndex + intervals[i] >= 12) {
-      noteOctave = octave + 1;
-    }
-    if (rootIndex + intervals[i] >= 24) {
-      noteOctave = octave + 2;
-    }
+    const totalSemitones = rootIndex + intervals[i];
     
-    // Validate octave range (piano typically goes from C0 to C8)
-    if (noteOctave < 0) noteOctave = 0;
-    if (noteOctave > 8) noteOctave = 8;
+    if (totalSemitones >= 12 && totalSemitones < 24) {
+      noteOctave = Math.min(octave + 1, 8);
+    } else if (totalSemitones >= 24) {
+      noteOctave = Math.min(octave + 2, 8);
+    }
     
     // Only add note if it's in the allowed scale
     if (allowedNotes.includes(noteName)) {
@@ -69,7 +85,11 @@ export const getChordNotes = (rootNote, chordType, inversion, allowedNotes) => {
   
   // Apply inversion with better octave handling
   if (inversion > 0 && chordNotes.length > inversion) {
-    for (let i = 0; i < inversion; i++) {
+    // Validate inversion doesn't exceed chord size
+    const maxInversion = chordNotes.length - 1;
+    const actualInversion = Math.min(inversion, maxInversion);
+    
+    for (let i = 0; i < actualInversion; i++) {
       const note = chordNotes.shift();
       const noteName = note.slice(0, -1);
       const noteOctave = parseInt(note.slice(-1));
@@ -77,19 +97,20 @@ export const getChordNotes = (rootNote, chordType, inversion, allowedNotes) => {
       // Calculate the new octave for the inverted note
       let newOctave = noteOctave + 1;
       
-      // If the highest note in the chord is already in a high octave,
-      // don't go beyond octave 7 to keep it playable
+      // Get the highest octave in the remaining chord
       const highestOctave = Math.max(...chordNotes.map(n => parseInt(n.slice(-1))));
+      
+      // Smart octave adjustment to keep inversions playable
       if (highestOctave >= 6) {
         newOctave = Math.min(newOctave, 7);
+      } else if (highestOctave >= 7) {
+        // For very high chords, might need to wrap around to lower octave
+        newOctave = Math.max(noteOctave, 4);
       }
       
       // Ensure we don't exceed the maximum octave
-      if (newOctave > 8) {
-        newOctave = 8;
-      }
+      newOctave = Math.min(newOctave, 8);
       
-      // Check if the inverted note would still be valid
       const invertedNote = `${noteName}${newOctave}`;
       chordNotes.push(invertedNote);
     }

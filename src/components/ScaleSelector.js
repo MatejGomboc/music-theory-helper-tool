@@ -30,7 +30,7 @@ const ScaleSelector = ({
     const parsedValue = parseInt(value);
     
     // Validate interval value
-    if (parsedValue < 1 || parsedValue > 6) {
+    if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > 6) {
       alert('Interval must be between 1 and 6 semitones');
       return;
     }
@@ -49,21 +49,28 @@ const ScaleSelector = ({
   };
 
   const addInterval = () => {
-    if (customScale.length < 12) {
-      // Check if adding would exceed limit
-      const currentTotal = customScale.reduce((a, b) => a + b, 0);
-      if (currentTotal >= 24) {
-        alert('Cannot add more intervals - already at 2 octave limit');
-        return;
-      }
-      setCustomScale([...customScale, 1]);
+    // Limit the number of intervals to 12
+    if (customScale.length >= 12) {
+      alert('Cannot add more than 12 intervals in a scale');
+      return;
     }
+    
+    // Check if adding would exceed limit
+    const currentTotal = customScale.reduce((a, b) => a + b, 0);
+    if (currentTotal >= 24) {
+      alert('Cannot add more intervals - already at 2 octave limit');
+      return;
+    }
+    
+    setCustomScale([...customScale, 1]);
   };
 
   const removeInterval = (index) => {
     if (customScale.length > 1) {
       const newCustomScale = customScale.filter((_, i) => i !== index);
       setCustomScale(newCustomScale);
+    } else {
+      alert('A scale must have at least one interval');
     }
   };
 
@@ -133,8 +140,11 @@ const ScaleSelector = ({
           </div>
           <div className="interval-sum">
             Total semitones: {getTotalSemitones()}
-            {getTotalSemitones() !== 12 && 
-              <span className="warning"> (Note: octave is 12 semitones)</span>
+            {getTotalSemitones() === 12 && 
+              <span className="info"> (Exactly one octave)</span>
+            }
+            {getTotalSemitones() !== 12 && getTotalSemitones() < 12 &&
+              <span className="warning"> (Less than an octave)</span>
             }
             {getTotalSemitones() > 12 && getTotalSemitones() <= 24 &&
               <span className="info"> (Spanning multiple octaves)</span>
