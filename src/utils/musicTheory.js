@@ -1,3 +1,5 @@
+import { CHORDS } from './chords';
+
 const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 export const getNoteIndex = (note) => {
@@ -27,7 +29,6 @@ export const getScaleNotes = (rootNote, intervals) => {
 };
 
 export const getChordNotes = (rootNote, chordType, inversion, allowedNotes) => {
-  const { CHORDS } = require('./chords');
   const intervals = CHORDS[chordType];
   if (!intervals) return [];
   
