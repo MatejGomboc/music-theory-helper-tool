@@ -5,8 +5,7 @@ import ScaleSelector from './components/ScaleSelector';
 import ChordPanel from './components/ChordPanel';
 import Display from './components/Display';
 import { SCALES } from './utils/scales';
-import { CHORDS } from './utils/chords';
-import { getNoteIndex, getNoteName, getScaleNotes, getChordNotes } from './utils/musicTheory';
+import { getScaleNotes, getChordNotes } from './utils/musicTheory';
 
 function App() {
   const [selectedScale, setSelectedScale] = useState('major');
