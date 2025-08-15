@@ -102,12 +102,6 @@
   font-size: 9px;
 }
 
-/* Hide certain black keys that don't exist */
-.piano-key[data-note*="B#"],
-.piano-key[data-note*="E#"] {
-  display: none;
-}
-
 /* Adjust positioning for black keys */
 .piano-key[data-note*="C#"],
 .piano-key[data-note*="F#"] {
