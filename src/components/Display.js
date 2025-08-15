@@ -39,9 +39,17 @@ const Display = ({ selectedNotes, selectedChord, chordInversion, scale, rootNote
       'dom13': '13'
     };
     
-    let chordName = rootNoteName + chordTypes[selectedChord];
+    // Handle unknown chord types gracefully
+    const chordSuffix = chordTypes[selectedChord] !== undefined 
+      ? chordTypes[selectedChord] 
+      : selectedChord;
+    
+    let chordName = rootNoteName + chordSuffix;
     if (chordInversion > 0) {
-      chordName += ` (${chordInversion}${chordInversion === 1 ? 'st' : chordInversion === 2 ? 'nd' : chordInversion === 3 ? 'rd' : 'th'} inv.)`;
+      const inversionSuffix = chordInversion === 1 ? 'st' : 
+                             chordInversion === 2 ? 'nd' : 
+                             chordInversion === 3 ? 'rd' : 'th';
+      chordName += ` (${chordInversion}${inversionSuffix} inv.)`;
     }
     
     return chordName;
@@ -50,8 +58,15 @@ const Display = ({ selectedNotes, selectedChord, chordInversion, scale, rootNote
   const isMinorChord = () => {
     return selectedChord && (
       selectedChord.includes('min') || 
-      selectedChord.includes('dim')
+      selectedChord.includes('dim') ||
+      selectedChord === 'minor' // Handle the base minor chord
     );
+  };
+
+  const formatScaleName = (scaleName) => {
+    if (!scaleName) return '';
+    return scaleName.charAt(0).toUpperCase() + 
+           scaleName.slice(1).replace(/_/g, ' ');
   };
 
   return (
@@ -59,7 +74,7 @@ const Display = ({ selectedNotes, selectedChord, chordInversion, scale, rootNote
       <div className="panel-header">
         <h3>Note Display</h3>
         <div className="scale-info">
-          {rootNote} {scale.charAt(0).toUpperCase() + scale.slice(1).replace(/_/g, ' ')}
+          {rootNote} {formatScaleName(scale)}
         </div>
       </div>
       
@@ -77,7 +92,7 @@ const Display = ({ selectedNotes, selectedChord, chordInversion, scale, rootNote
                     key={index} 
                     className={`note-bar ${isMinor ? 'minor' : 'major'}`}
                     style={{
-                      backgroundColor: noteColors[noteName],
+                      backgroundColor: noteColors[noteName] || '#808080',
                       opacity: isMinor ? 0.7 : 0.9
                     }}
                   >

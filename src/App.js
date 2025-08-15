@@ -30,6 +30,19 @@ function App() {
     if (scaleIntervals && scaleIntervals.length > 0) {
       const notes = getScaleNotes(rootNote, scaleIntervals);
       setAllowedNotes(notes);
+      
+      // Clear selected notes if they're not in the new scale
+      setSelectedNotes(prev => {
+        return prev.filter(note => {
+          const noteName = note.slice(0, -1);
+          return notes.includes(noteName);
+        });
+      });
+      
+      // Clear chord selection when scale changes
+      setSelectedChord(null);
+      setChordInversion(0);
+      setChordRootNote(null);
     }
   }, [selectedScale, rootNote, customScale, isCustomScale]);
 
