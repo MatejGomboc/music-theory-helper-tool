@@ -1,1 +1,0 @@
-// FILE TO BE DELETED - Audio is handled directly in Piano.js component

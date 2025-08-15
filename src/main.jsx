@@ -1,1 +1,0 @@
-// FILE TO BE DELETED - Using src/index.js for Create React App instead
